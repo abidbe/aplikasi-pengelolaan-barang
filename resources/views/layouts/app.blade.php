@@ -60,7 +60,9 @@
                     sidebarTitle.textContent = 'APB';
                 } else {
                     sidebar.classList.remove('collapsed');
-                    sidebarTitle.textContent = '{{ config('app.name', 'Laravel') }}';
+                    setTimeout(() => {
+                        sidebarTitle.textContent = '{{ config('app.name', 'Laravel') }}';
+                    }, 200); // Delay to allow transition
                 }
             }
 

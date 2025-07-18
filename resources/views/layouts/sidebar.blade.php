@@ -22,7 +22,9 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="flex items-center tooltip tooltip-right" data-tip="Barang">
+                <a href="{{ route('barang-masuks.index') }}"
+                    class="flex items-center {{ request()->routeIs('barang-masuks.*') ? 'active' : '' }} tooltip tooltip-right"
+                    data-tip="Barang Masuk">
                     <x-heroicon-o-cube class="w-5 h-5 flex-shrink-0" />
                     <span class="sidebar-text ml-2 transition-all duration-300">Barang Masuk</span>
                 </a>

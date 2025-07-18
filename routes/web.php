@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubKategoriController;
@@ -30,6 +31,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Barang Masuk Routes (all authenticated users)
+    Route::resource('barang-masuks', BarangMasukController::class);
+    Route::post('barang-masuks/{barangMasuk}/toggle-verification', [BarangMasukController::class, 'toggleVerification'])->name('barang-masuks.toggle-verification');
+    Route::get('barang-masuks/{barangMasuk}/print', [BarangMasukController::class, 'print'])->name('barang-masuks.print');
+    Route::get('barang-masuks-export', [BarangMasukController::class, 'export'])->name('barang-masuks.export');
+
+    // API Routes for dynamic data
+    Route::get('api/sub-kategoris', [BarangMasukController::class, 'getSubKategoris'])->name('api.sub-kategoris');
+    Route::get('api/batas-harga', [BarangMasukController::class, 'getBatasHarga'])->name('api.batas-harga');
+    Route::get('api/kategoris', [SubKategoriController::class, 'getKategoris'])->name('api.kategoris');
 });
 
 // Admin only routes
@@ -40,7 +52,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Master Data Routes
     Route::resource('kategoris', KategoriController::class);
     Route::resource('sub-kategoris', SubKategoriController::class);
-    Route::get('api/kategoris', [SubKategoriController::class, 'getKategoris'])->name('api.kategoris');
 });
 
 require __DIR__ . '/auth.php';

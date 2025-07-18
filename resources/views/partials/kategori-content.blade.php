@@ -20,7 +20,6 @@
                         <th>Action</th>
                         <th>Kode</th>
                         <th>Nama Kategori</th>
-                        <th>Tanggal Dibuat</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -173,8 +172,7 @@
                     index + 1,
                     actions,
                     kategori.kode,
-                    kategori.nama,
-                    createdAt
+                    kategori.nama
                 ]);
             });
 

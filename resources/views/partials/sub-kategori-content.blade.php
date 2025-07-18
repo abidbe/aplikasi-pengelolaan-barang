@@ -21,7 +21,6 @@
                         <th>Kategori</th>
                         <th>Nama Sub Kategori</th>
                         <th>Batas Harga</th>
-                        <th>Tanggal Dibuat</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -217,8 +216,7 @@
                     actions,
                     subKategori.kategori.kode + ' - ' + subKategori.kategori.nama,
                     subKategori.nama,
-                    batasHarga,
-                    createdAt
+                    batasHarga
                 ]);
             });
 
