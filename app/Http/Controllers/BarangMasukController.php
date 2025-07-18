@@ -101,8 +101,8 @@ class BarangMasukController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'operator_id' => 'required|exists:users,id',
+        // Tentukan validation rules berdasarkan role
+        $rules = [
             'sub_kategori_id' => 'required|exists:sub_kategoris,id',
             'asal_barang' => 'required|string|max:200',
             'nomor_surat' => 'nullable|string|max:100',
@@ -113,9 +113,16 @@ class BarangMasukController extends Controller
             'items.*.jumlah' => 'required|integer|min:1',
             'items.*.satuan' => 'required|string|max:40',
             'items.*.tgl_expired' => 'nullable|date',
-        ]);
+        ];
 
-        // Check if operator role can only create for themselves
+        // Hanya admin yang bisa pilih operator_id
+        if (auth()->user()->role === 'admin') {
+            $rules['operator_id'] = 'required|exists:users,id';
+        }
+
+        $validated = $request->validate($rules);
+
+        // Set operator_id untuk role operator
         if (auth()->user()->role === 'operator') {
             $validated['operator_id'] = auth()->id();
         }
@@ -125,6 +132,7 @@ class BarangMasukController extends Controller
         foreach ($validated['items'] as $item) {
             $totalHarga += $item['harga'] * $item['jumlah'];
         }
+
 
         // Validate against batas harga
         $subKategori = SubKategori::find($validated['sub_kategori_id']);
@@ -140,7 +148,9 @@ class BarangMasukController extends Controller
             // Handle file upload
             $lampiranPath = null;
             if ($request->hasFile('lampiran')) {
-                $lampiranPath = $request->file('lampiran')->store('lampirans', 'public');
+                $file = $request->file('lampiran');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $lampiranPath = $file->storeAs('lampirans', $fileName, 'public');
             }
 
             // Create barang masuk
@@ -204,8 +214,8 @@ class BarangMasukController extends Controller
             abort(403);
         }
 
-        $validated = $request->validate([
-            'operator_id' => 'required|exists:users,id',
+        // Tentukan validation rules berdasarkan role
+        $rules = [
             'sub_kategori_id' => 'required|exists:sub_kategoris,id',
             'asal_barang' => 'required|string|max:200',
             'nomor_surat' => 'nullable|string|max:100',
@@ -216,8 +226,16 @@ class BarangMasukController extends Controller
             'items.*.jumlah' => 'required|integer|min:1',
             'items.*.satuan' => 'required|string|max:40',
             'items.*.tgl_expired' => 'nullable|date',
-        ]);
+        ];
 
+        // Hanya admin yang bisa pilih operator_id
+        if (auth()->user()->role === 'admin') {
+            $rules['operator_id'] = 'required|exists:users,id';
+        }
+
+        $validated = $request->validate($rules);
+
+        // Set operator_id untuk role operator
         if (auth()->user()->role === 'operator') {
             $validated['operator_id'] = auth()->id();
         }
