@@ -24,15 +24,40 @@
             <li>
                 <a href="#" class="flex items-center tooltip tooltip-right" data-tip="Barang">
                     <x-heroicon-o-cube class="w-5 h-5 flex-shrink-0" />
-                    <span class="sidebar-text ml-2 transition-all duration-300">Barang</span>
+                    <span class="sidebar-text ml-2 transition-all duration-300">Barang Masuk</span>
                 </a>
             </li>
-            <li>
-                <a href="#" class="flex items-center tooltip tooltip-right" data-tip="Laporan">
-                    <x-heroicon-o-clipboard-document-list class="w-5 h-5 flex-shrink-0" />
-                    <span class="sidebar-text ml-2 transition-all duration-300">Laporan</span>
-                </a>
-            </li>
+            @if (auth()->user()->isAdmin())
+                <li>
+                    <details class="group"
+                        {{ request()->routeIs('kategoris.*') || request()->routeIs('sub-kategoris.*') ? 'open' : '' }}>
+                        <summary class="flex items-center cursor-pointer tooltip tooltip-right" data-tip="Master Data">
+                            <x-heroicon-o-clipboard-document-list class="w-5 h-5 flex-shrink-0" />
+                            <span class="sidebar-text ml-2 transition-all duration-300">Master Data</span>
+                            <x-heroicon-o-chevron-down
+                                class="w-4 h-4 ml-auto transition-transform duration-200 group-open:rotate-180" />
+                        </summary>
+                        <ul class="menu-compact">
+                            <li>
+                                <a href="{{ route('kategoris.index') }}"
+                                    class="flex items-center pl-8 tooltip tooltip-right {{ request()->routeIs('kategoris.*') ? 'active' : '' }}"
+                                    data-tip="Kategori">
+                                    <x-heroicon-o-tag class="w-4 h-4 flex-shrink-0" />
+                                    <span class="sidebar-text ml-2 transition-all duration-300">Kategori</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('sub-kategoris.index') }}"
+                                    class="flex items-center pl-8 tooltip tooltip-right {{ request()->routeIs('sub-kategoris.*') ? 'active' : '' }}"
+                                    data-tip="Sub Kategori">
+                                    <x-heroicon-o-bookmark class="w-4 h-4 flex-shrink-0" />
+                                    <span class="sidebar-text ml-2 transition-all duration-300">Sub Kategori</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+            @endif
             @if (auth()->user()->isAdmin())
                 <li>
                     <a href="{{ route('users.index') }}"
@@ -43,12 +68,6 @@
                     </a>
                 </li>
             @endif
-            <li>
-                <a href="#" class="flex items-center tooltip tooltip-right" data-tip="Pengaturan">
-                    <x-heroicon-o-cog-6-tooth class="w-5 h-5 flex-shrink-0" />
-                    <span class="sidebar-text ml-2 transition-all duration-300">Pengaturan</span>
-                </a>
-            </li>
         </ul>
     </aside>
 </div>

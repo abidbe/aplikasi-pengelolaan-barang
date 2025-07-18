@@ -176,6 +176,63 @@ function initDataTable(tableId, options = {}) {
     return $(tableId).DataTable({ ...defaultOptions, ...options });
 }
 
+// Currency Formatter
+function formatCurrency(amount) {
+    return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(amount);
+}
+
+// Currency Input Masking
+function applyCurrencyMask(inputSelector) {
+    const input = document.querySelector(inputSelector);
+    if (!input) return;
+
+    input.addEventListener("input", function (e) {
+        let value = e.target.value.replace(/[^\d,]/g, "");
+        if (value) {
+            e.target.value = formatRupiah(value);
+        }
+    });
+
+    // Prevent non-numeric input
+    input.addEventListener("keypress", function (e) {
+        const char = String.fromCharCode(e.which);
+        if (!/[\d,]/.test(char)) {
+            e.preventDefault();
+        }
+    });
+}
+
+function formatRupiah(angka) {
+    let number_string = angka.replace(/[^,\d]/g, "").toString();
+    let split = number_string.split(",");
+    let sisa = split[0].length % 3;
+    let rupiah = split[0].substr(0, sisa);
+    let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+    if (ribuan) {
+        let separator = sisa ? "." : "";
+        rupiah += separator + ribuan.join(".");
+    }
+
+    rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+    return "Rp " + rupiah;
+}
+
+function parseRupiah(rupiahString) {
+    // Handle decimal separator
+    let cleanString = rupiahString.replace(/[^\d,]/g, "");
+    if (cleanString.includes(",")) {
+        let parts = cleanString.split(",");
+        return parseFloat(parts[0] + "." + parts[1]) || 0;
+    }
+    return parseInt(cleanString) || 0;
+}
+
 // Icons Helper - SVG Heroicons
 const Icons = {
     edit: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>',

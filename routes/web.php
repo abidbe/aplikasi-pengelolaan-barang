@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SubKategoriController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +36,11 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('users', UserController::class);
     Route::post('users/{user}/toggle-lock', [UserController::class, 'toggleLock'])->name('users.toggle-lock');
+
+    // Master Data Routes
+    Route::resource('kategoris', KategoriController::class);
+    Route::resource('sub-kategoris', SubKategoriController::class);
+    Route::get('api/kategoris', [SubKategoriController::class, 'getKategoris'])->name('api.kategoris');
 });
 
 require __DIR__ . '/auth.php';
