@@ -10,15 +10,15 @@
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
-        <!-- Email Address -->
+        <!-- Username -->
         <div class="form-control w-full">
-            <label class="label" for="email">
-                <span class="label-text">{{ __('Email') }}</span>
+            <label class="label" for="username">
+                <span class="label-text">{{ __('Username') }}</span>
             </label>
-            <input id="email" type="email" name="email" value="{{ old('email') }}"
-                class="input input-bordered w-full @error('email') input-error @enderror" required autofocus
+            <input id="username" type="text" name="username" value="{{ old('username') }}"
+                class="input input-bordered w-full @error('username') input-error @enderror" required autofocus
                 autocomplete="username" />
-            @error('email')
+            @error('username')
                 <label class="label">
                     <span class="label-text-alt text-error">{{ $message }}</span>
                 </label>
