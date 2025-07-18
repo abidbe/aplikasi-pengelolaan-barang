@@ -118,7 +118,7 @@
                         </div>
                         <div class="text-right hidden sm:block">
                             <div class="font-semibold text-sm text-start">{{ Auth::user()->name }}</div>
-                            <div class="text-xs opacity-70">{{ Auth::user()->email }}</div>
+                            <div class="text-xs opacity-70 text-start">{{ Auth::user()->role }}</div>
                         </div>
                         <x-heroicon-o-chevron-down class="w-4 h-4" />
                     </div>

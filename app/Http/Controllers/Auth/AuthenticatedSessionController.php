@@ -27,9 +27,17 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        // Check if user is locked
+        if (Auth::user()->isLocked()) {
+            Auth::logout();
+            return back()->withErrors([
+                'email' => 'Akun Anda telah dikunci. Silakan hubungi administrator.',
+            ]);
+        }
+
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**

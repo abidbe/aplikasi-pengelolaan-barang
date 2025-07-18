@@ -12,8 +12,17 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    <!-- External CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+
+    <!-- Additional Styles -->
+    @stack('styles')
 </head>
 
 <body class="font-sans antialiased">
@@ -26,6 +35,13 @@
 
         @include('layouts.sidebar')
     </div>
+
+    <!-- External Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="{{ asset('js/main.js') }}"></script>
 
     <script>
         // Sidebar collapse functionality
@@ -62,6 +78,9 @@
             }
         });
     </script>
+
+    <!-- Additional Scripts -->
+    @stack('scripts')
 </body>
 
 </html>

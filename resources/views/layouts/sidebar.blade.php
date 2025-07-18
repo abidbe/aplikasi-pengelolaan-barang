@@ -1,4 +1,3 @@
-<!-- filepath: c:\laragon\www\aplikasi-pengelolaan-barang\resources\views\layouts\sidebar.blade.php -->
 <div class="drawer-side">
     <label for="drawer-toggle" aria-label="close sidebar" class="drawer-overlay"></label>
     <aside id="sidebar" class="min-h-full transition-all duration-300 bg-base-300 w-64">
@@ -34,6 +33,16 @@
                     <span class="sidebar-text ml-2 transition-all duration-300">Laporan</span>
                 </a>
             </li>
+            @if (auth()->user()->isAdmin())
+                <li>
+                    <a href="{{ route('users.index') }}"
+                        class="flex items-center {{ request()->routeIs('users.*') ? 'active' : '' }} tooltip tooltip-right"
+                        data-tip="User Management">
+                        <x-heroicon-o-users class="w-5 h-5 flex-shrink-0" />
+                        <span class="sidebar-text ml-2 transition-all duration-300">User Management</span>
+                    </a>
+                </li>
+            @endif
             <li>
                 <a href="#" class="flex items-center tooltip tooltip-right" data-tip="Pengaturan">
                     <x-heroicon-o-cog-6-tooth class="w-5 h-5 flex-shrink-0" />
