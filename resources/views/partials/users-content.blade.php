@@ -130,7 +130,7 @@
 
             // Role filter
             $('#roleFilter').on('change', function() {
-                loadUsers();
+                updateTable();
             });
 
             // Event handlers
@@ -159,9 +159,6 @@
         });
 
         function loadUsers() {
-            const roleFilter = $('#roleFilter').val();
-
-            // Tambahkan loading state
             $('#usersTable').addClass('loading-overlay');
 
             $.ajax({
@@ -169,9 +166,6 @@
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json'
-                },
-                data: {
-                    role: roleFilter
                 },
                 success: function(data) {
                     usersData = data;
@@ -221,7 +215,13 @@
         function updateTable() {
             table.clear();
 
-            usersData.forEach(function(user, index) {
+            // Filter data berdasarkan role filter
+            const roleFilter = $('#roleFilter').val();
+            const filteredUsers = roleFilter ?
+                usersData.filter(user => user.role === roleFilter) :
+                usersData;
+
+            filteredUsers.forEach(function(user, index) {
                 const lockIcon = user.is_locked ? Icons.lock : Icons.unlock;
                 const lockClass = user.is_locked ? 'btn-warning' : 'btn-success';
                 const lockTitle = user.is_locked ? 'Unlock User' : 'Lock User';
@@ -261,6 +261,7 @@
 
             table.draw();
         }
+
 
         function submitForm() {
             let formData = new FormData($('#userForm')[0]);

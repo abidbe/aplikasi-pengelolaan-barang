@@ -18,9 +18,6 @@ class UserController extends Controller
         // Jika request JSON, return data untuk DataTables
         if ($request->wantsJson()) {
             $users = User::select(['id', 'username', 'name', 'email', 'role', 'is_locked'])
-                ->when($request->filled('role'), function ($query) use ($request) {
-                    return $query->where('role', $request->role);
-                })
                 ->get();
 
             return response()->json($users);
