@@ -12,6 +12,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class BarangMasukExport implements FromCollection, WithHeadings, WithMapping, WithStyles
 {
     protected $filters;
+    protected $rowNumber = 1;
 
     public function __construct($filters = [])
     {
@@ -22,7 +23,6 @@ class BarangMasukExport implements FromCollection, WithHeadings, WithMapping, Wi
     {
         $query = BarangMasuk::with(['operator', 'subKategori.kategori', 'items']);
 
-        // Apply same filters as in controller
         if (auth()->user()->role === 'operator') {
             $query->where('operator_id', auth()->id());
         }
@@ -51,49 +51,78 @@ class BarangMasukExport implements FromCollection, WithHeadings, WithMapping, Wi
             });
         }
 
-        return $query->orderBy('created_at', 'desc')->get();
+        $barangMasuks = $query->orderBy('created_at', 'desc')->get();
+
+        $result = collect();
+
+        foreach ($barangMasuks as $barangMasuk) {
+            if ($barangMasuk->items->count() > 0) {
+                foreach ($barangMasuk->items as $index => $item) {
+                    $result->push((object)[
+                        'barang_masuk' => $barangMasuk,
+                        'item' => $item,
+                        'item_index' => $index,
+                        'is_first_item' => $index === 0,
+                        'row_number' => $this->rowNumber
+                    ]);
+                }
+            } else {
+                // Jika tidak ada items
+                $result->push((object)[
+                    'barang_masuk' => $barangMasuk,
+                    'item' => null,
+                    'item_index' => 0,
+                    'is_first_item' => true,
+                    'row_number' => $this->rowNumber
+                ]);
+            }
+            $this->rowNumber++;
+        }
+
+        return $result;
     }
 
     public function headings(): array
     {
         return [
             'No',
-            'Tanggal Masuk',
-            'Operator',
-            'Kategori',
-            'Sub Kategori',
+            'Tanggal',
             'Asal Barang',
-            'Nomor Surat',
-            'Total Harga',
-            'Status Verifikasi',
-            'Items'
+            'Penerima',
+            'Unit',
+            'Kode',
+            'Nama',
+            'Harga',
+            'Jumlah',
+            'Total',
+            'Status'
         ];
     }
 
-    public function map($barangMasuk): array
+    public function map($row): array
     {
-        $items = $barangMasuk->items->map(function ($item) {
-            return $item->nama_barang . ' (' . $item->jumlah . ' ' . $item->satuan . ')';
-        })->implode(', ');
+        $barangMasuk = $row->barang_masuk;
+        $item = $row->item;
 
         return [
-            $barangMasuk->id,
-            $barangMasuk->created_at->format('d/m/Y'),
-            $barangMasuk->operator->name,
-            $barangMasuk->subKategori->kategori->nama,
-            $barangMasuk->subKategori->nama,
-            $barangMasuk->asal_barang,
-            $barangMasuk->nomor_surat ?: '-',
-            'Rp ' . number_format($barangMasuk->total_harga, 2, ',', '.'),
-            $barangMasuk->is_verified ? 'Terverifikasi' : 'Belum Terverifikasi',
-            $items
+            $row->is_first_item ? $row->row_number : '', // No - hanya di baris pertama
+            $row->is_first_item ? $barangMasuk->created_at->format('d/m/Y H:i') : '', // Tanggal
+            $row->is_first_item ? $barangMasuk->asal_barang : '', // Asal Barang
+            $row->is_first_item ? $barangMasuk->operator->name : '', // Penerima
+            $row->is_first_item ? $barangMasuk->subKategori->nama : '', // Unit
+            $item ? 'ITEM-' . str_pad($row->item_index + 1, 3, '0', STR_PAD_LEFT) : ($row->is_first_item ? 'Tidak ada items' : ''), // Kode
+            $item ? $item->nama_barang : '', // Nama
+            $item ? 'Rp ' . number_format($item->harga, 0, ',', '.') : '', // Harga
+            $item ? $item->jumlah . ' ' . $item->satuan : '', // Jumlah
+            $item ? 'Rp ' . number_format($item->total, 0, ',', '.') : '', // Total
+            $row->is_first_item ? ($barangMasuk->is_verified ? 'Terverifikasi' : 'Belum Terverifikasi') : '' // Status
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
         return [
-            1 => ['font' => ['bold' => true]],
+            1 => ['font' => ['bold' => true]], // Header row bold
         ];
     }
 }
