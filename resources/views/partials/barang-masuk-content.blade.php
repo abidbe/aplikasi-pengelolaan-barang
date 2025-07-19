@@ -65,7 +65,7 @@
         </div>
 
         <!-- Sorting -->
-        <div class="flex gap-2 mb-4">
+        {{-- <div class="flex gap-2 mb-4">
             <span class="text-sm font-medium">Urutkan berdasarkan:</span>
             <button class="btn btn-xs btn-outline sort-btn" data-sort="tanggal" data-direction="desc">
                 Tanggal <x-heroicon-o-arrow-down class="w-3 h-3" />
@@ -76,7 +76,7 @@
             <button class="btn btn-xs btn-outline sort-btn" data-sort="total_harga" data-direction="desc">
                 Total Harga <x-heroicon-o-arrow-down class="w-3 h-3" />
             </button>
-        </div>
+        </div> --}}
 
         <!-- DataTable -->
         <div class="overflow-x-auto">
@@ -311,7 +311,7 @@
                             <td>${new Date(barangMasuk.created_at).toLocaleString('id-ID')}</td>
                             <td>${barangMasuk.asal_barang}</td>
                             <td>${barangMasuk.operator.name}</td>
-                            <td>${barangMasuk.sub_kategori.kategori.nama}</td>
+                            <td>${barangMasuk.sub_kategori.nama}</td>
                             <td colspan="5" class="text-center text-gray-500">Tidak ada items</td>
                             <td>
                                 <input type="checkbox" class="toggle toggle-success verify-toggle" 
@@ -329,7 +329,7 @@
                         let row = '<tr>';
 
                         if (isFirstItem) {
-                            // Kolom yang di-merge (rowspan)
+                            // Kolom yang di-merge (rowspan) 
                             row += `
                                 <td rowspan="${itemsCount}">${rowNum}</td>
                                 <td rowspan="${itemsCount}">
@@ -348,7 +348,7 @@
                                 <td rowspan="${itemsCount}">${new Date(barangMasuk.created_at).toLocaleString('id-ID')}</td>
                                 <td rowspan="${itemsCount}">${barangMasuk.asal_barang}</td>
                                 <td rowspan="${itemsCount}">${barangMasuk.operator.name}</td>
-                                <td rowspan="${itemsCount}">${barangMasuk.sub_kategori.kategori.nama}</td>
+                                <td rowspan="${itemsCount}">${barangMasuk.sub_kategori.nama}</td>
                             `;
                         }
 
